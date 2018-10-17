@@ -1,8 +1,10 @@
 package Controller;
 import MyUtils.JSONUtil;
 import MyUtils.Standard;
+import Proxy.CGLIBProxy;
 import com.jadesystem.dao.*;
 import com.jadesystem.entities.*;
+import com.jadesystem.mapper.*;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -11,14 +13,14 @@ import java.math.BigDecimal;
 
 @WebServlet("/doServlet")
 public class doServlet extends BaseServlet {
-    /*访问层*/
-    BrandDAO brandDAO=new BrandDAO();
-    ColorDAO colorDAO=new ColorDAO();
-    HangtypeDAO hangtypeDAO=new HangtypeDAO();
-    IcetypeDAO icetypeDAO=new IcetypeDAO();
-    InlayDAO inlayDAO=new InlayDAO();
-    MoralDAO moralDAO=new MoralDAO();
-    ProductsDAO productsDAO=new ProductsDAO();
+    /*面向接口编程，访问层，以及动态代理类*/
+    BrandMapper brandDAO= (BrandMapper) new CGLIBProxy().getTargetobjec(new BrandDAO());
+    ColorMapper colorDAO=(ColorMapper) new CGLIBProxy().getTargetobjec(new ColorDAO());
+    HangtypeMapper hangtypeDAO= (HangtypeMapper) new CGLIBProxy().getTargetobjec(new HangtypeDAO());
+    IcetypeMapper icetypeDAO= (IcetypeMapper) new CGLIBProxy().getTargetobjec(new IcetypeDAO());
+    InlayMapper inlayDAO= (InlayMapper) new CGLIBProxy().getTargetobjec(new InlayDAO());
+    MoralMapper moralDAO= (MoralMapper) new CGLIBProxy().getTargetobjec(new MoralDAO());
+    ProductsMapper productsDAO= (ProductsMapper) new CGLIBProxy().getTargetobjec(new ProductsDAO());
 
     Standard standard=new Standard();
 

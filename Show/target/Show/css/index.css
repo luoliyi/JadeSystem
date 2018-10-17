@@ -1,0 +1,97 @@
+*{margin: 0;padding: 0}
+ul{
+    list-style: none;
+}
+html,body{
+    width: 100%;
+    height: 100%;
+}
+
+#maxdiv{
+    width: 80%;
+    height: 700px;
+    margin: 0 auto;
+}
+#top{
+    width: 100%;
+    height: 35%;
+    margin:  0 auto;
+}
+#top p{
+    height: 30px;
+}
+#top #left{
+    height: 100%;
+    width: 9%;
+    float: left;
+}
+#top #right{
+    float: left;
+    width: 90%;
+    height: 100%;
+}
+#top #right ul{
+    width: 100%;
+    display: inline-block;
+    margin-bottom: 8px;
+}
+#top #right li{
+    display: inline-block;
+    float: left;
+    width: 30px;
+    text-align: center;
+    width: 70px;
+}
+#top #right li:hover{
+    cursor: pointer;
+}
+#top #right #jadeprice li:first-child,#top #right #jadeinlay li:first-child{
+    width: 80px;
+}
+#top #right #jadeprice li,#top #right #jadeinlay li{
+    width: 110px;
+ }
+#top #right li:first-child{
+    width: 80px;
+}
+#top #right li:last-child{
+}
+#details{
+    width: 100%;
+    height: 500px;
+    margin:  0 auto;
+}
+#details #details_top{
+    color: white;
+    width: 100%;
+    height: 30px;
+    background: #6ede48;
+    line-height: 30px;
+}
+#details_top #more{
+    float: right;
+}
+#show_details{
+    width: 100%;
+    height: 90%;
+}
+#show_details .onegood{
+    margin: 0.7%;
+    width: 15%;
+    height: 200px;
+    text-align: center;
+    float: left;
+}
+#show_details .onegood img{
+    width: 100%;
+    height: 115px;
+}
+#show_details .onegood:last-child{
+    margin-right: 0;
+}
+.colorgreen{
+    color: green;
+}
+
+#orderbyprice{
+}

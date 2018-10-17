@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>卖玉系统</title>
+    <link href="js/layui/css/layui.css" rel="stylesheet">
+    <link href="css/index.css" rel="stylesheet">
+</head>
+<body>
+    <div id="maxdiv">
+        <div id="top">
+            <div id="left">
+                <p><strong>翡翠品牌：</strong></p>
+                <p><strong>翡翠价格：</strong></p>
+                <p><strong>翡翠颜色：</strong></p>
+                <p><strong>翡翠种地：</strong></p>
+                <p><strong>是否镶嵌：</strong></p>
+                <p><strong>翡翠寓意：</strong></p>
+                <p><strong>挂件类型：</strong></p>
+            </div>
+            <div id="right">
+                <ul id="jadebrand">
+                    <li class="all" data-myid="jadebrand" style="background: url('img/unchecked.jpg');background-repeat: no-repeat;color: white">全部</li>
+                </ul>
+                <ul  id="jadeprice">
+                    <li class="all" data-myid="jadeprice"  style="background: url('img/unchecked.jpg');background-repeat: no-repeat;color: white">全部</li>
+                    <li data-obj="50-1000">50-1000</li><li data-obj="1001-3000">1001-3000</li><li data-obj="3001-10000">3001-10000</li>
+                    <li data-obj="10001-3000">10001-30000</li><li data-obj="30001-100000">30001-100000</li><li data-obj="100001-890000">100001-890000</li>
+                </ul>
+                <ul id="jadecolor">
+                    <li  class="all" data-myid="jadecolor"   style="background: url('img/unchecked.jpg');background-repeat: no-repeat;color: white">全部</li>
+                </ul>
+                <ul id="jadeicetype">
+                    <li  class="all" data-myid="jadeicetype" style="background: url('img/unchecked.jpg');background-repeat: no-repeat;color: white">全部</li>
+                </ul>
+                <ul id="jadeinlay">
+                    <li class="all" data-myid="jadeinlay"  style="background: url('img/unchecked.jpg');background-repeat: no-repeat;color: white">全部</li>
+                </ul>
+                <ul id="jademoral">
+                    <li class="all" data-myid="jademoral" style="background: url('img/unchecked.jpg');background-repeat: no-repeat;color: white">全部</li>
+                </ul>
+                <ul id="jadehangtype">
+                    <li class="all"data-myid="jadehangtype"  style="background: url('img/unchecked.jpg');background-repeat: no-repeat;color: white">全部</li>
+                </ul>
+            </div>
+        </div>
+        <div id="details">
+            <div id="details_top">
+                <span>商品列表</span>
+                <button id="orderbyprice">按价格升/降排序</button>
+                <span id="more">更多>></span>
+            </div>
+            <div id="show_details">
+                <div class="onegood">
+                    <img src="img/g(10).jpg">
+                    <span>式例</span>
+                    <p>原价：<del>￥</del><del>12323</del><del>元</del></p>
+                    <p class="colorgreen">商城价：￥<span>123123</span><span>元</span></p>
+                </div>
+            </div>
+        </div>
+        <!--分页组件-->
+        <div id="demo2-1"></div>
+    </div>
+
+</body>
+
+<script src="js/jquery-1.11.3.js"></script>
+<script src="js/layui/layui.js"></script>
+<script>
+    $(function () {
+        /*app*/
+        var app={
+
+            binddata(){
+                /*获取总数*/
+                $.post("doServlet?action=getAllCount",{},function (sum) {
+                    console.log(sum);
+                    //分页
+                    layui.use(['laypage', 'layer'], function() {
+                        var laypage = layui.laypage
+                            , layer = layui.layer;
+                        //总页数大于页码总数
+                        laypage.render({
+                            elem: 'demo2-1'
+                            ,limit:12
+                            , count: sum //数据总数
+                            //当前页
+                            ,curr: location.hash.replace('#!fenye=', '') //获取起始页
+                            ,hash: 'fenye' //自定义hash值
+                            , jump: function (obj) {
+                                //请求数据
+                                $.ajax({
+                                    url:"doServlet?action=getAllProductsByPage",
+                                    data:{pageno:obj.curr,size:obj.limit},
+                                    success:function (data) {
+                                        /*清空历史数据*/
+                                        $("#show_details div").remove();
+                                        $.each(data,function (index,obj) {
+                                            var cdiv=$("<div class='onegood'><div/>");
+                                            var imgs=$("<img src=img/"+obj.ppicture+">");
+                                            var span=$("<span>"+obj.pname+"</span>");
+                                            var p1=$("<p>原价：<del>￥</del><del >"+obj.pmarketprice+"</del><del>元</del></p>");
+                                            var p2=$("<p class=\"colorgreen\">商城价：￥<span class='pmyprice'>"+obj.pmyprice+"</span><span>元</span></p>");
+                                            cdiv.append(imgs).append(span).append(p1).append(p2).appendTo($("#show_details"));
+                                        });
+                                    }
+                                })
+                            }
+                        });
+                    })
+                });
+            }
+            ,orderbyprice(){
+                $("#show_details .onegood .pmyprice").each(function (index,obj) {
+                    console.log(obj.innerHTML)
+                })
+            }
+            ,binddetails(){
+                $.ajax({
+                    url:"doServlet?action=getAllDetails",
+                    ansyc:false,
+                    success:function (data) {
+                        console.log(data);
+                        $.each(data.brand,function (index,obj) {
+                            $("<li/>").html(obj.bname).data("bid",obj.bid).data("obj",obj).data("name",obj.bname).appendTo($("#jadebrand"));
+                        });
+                        $.each(data.color,function (index,obj) {
+                            $("<li/>").html(obj.cname).data("cid",obj.cid).data("obj",obj).data("name",obj.cname).appendTo($("#jadecolor"));
+                        });
+                        $.each(data.inlay,function (index,obj) {
+                            $("<li/>").html(obj.iname).data("iid",obj.iid).data("obj",obj).data("name",obj.iname).appendTo($("#jadeinlay"));
+                        });
+                        $.each(data.hangtype,function (index,obj) {
+                            $("<li/>").html(obj.htname).data("htid",obj.htid).data("obj",obj).data("name",obj.htname).appendTo($("#jadehangtype"));
+                        });
+                        $.each(data.icetype,function (index,obj) {
+                            $("<li/>").html(obj.itname).data("itid",obj.itid).data("obj",obj).data("name",obj.itname).appendTo($("#jadeicetype"));
+                        });
+                        $.each(data.moral,function (index,obj) {
+                            $("<li/>").html(obj.mname).data("mid",obj.mid).data("obj",obj).data("name",obj.mname).appendTo($("#jademoral"));
+                        });
+                    }
+                });
+            }
+            ,init(){
+                app.binddetails();
+                app.binddata();
+
+                //按价格排序
+                $("#orderbyprice").click(app.orderbyprice);
+
+                var brand=0;
+                var price="";
+                var color=0;
+                var icetype=0;
+                var inlay=0;
+                var moral=0;
+                var hangtype=0;
+                $("#jadebrand").on("click" ,"li",function () {
+                    if(brand==0) {
+                        if ($(this).index() > 0) {
+                            brand = $(this).data("obj").bid;
+                        }
+                    }else {
+                        brand=0;
+                    }
+                });
+                $("#jadeprice").on("click" ,"li",function () {
+                    if ($(this).index() > 0) {
+                        price = $(this).data("obj");
+                    }else {
+                        price="";
+                    }
+                });
+                $("#jadecolor").on("click" ,"li",function () {
+                    if(color==0) {
+                        if ($(this).index() > 0) {
+                            color = $(this).data("obj").cid;
+                        }
+                    }else {
+                        color=0;
+                    }
+                });
+                $("#jadeicetype").on("click" ,"li",function () {
+                    if(icetype==0) {
+                        if ($(this).index() > 0) {
+                            icetype = $(this).data("obj").itid;
+                        }
+                    }else {
+                        icetype=0;
+                    }
+                });
+                $("#jadeinlay").on("click" ,"li",function () {
+                    if(inlay==0) {
+                        if ($(this).index() > 0) {
+                            inlay = $(this).data("obj").iid;
+                        }
+                    }else {
+                        inlay=0;
+                    }
+                });
+                $("#jademoral").on("click" ,"li",function () {
+                    if(moral==0) {
+                        if ($(this).index() > 0) {
+                            moral = $(this).data("obj").mid;
+                        }
+                    }else {
+                        moral=0;
+                    }
+                });
+                $("#jadehangtype").on("click" ,"li",function () {
+                    if(hangtype==0) {
+                        if ($(this).index() > 0) {
+                            hangtype = $(this).data("obj").htid;
+                        }
+                    }else {
+                        hangtype=0;
+                    }
+                });
+                /*li颜色逻辑*/
+                var boo=true;
+                var indexdata=null;
+               $("#right").on("click","li",function (index,obj) {
+                   if($(this).index()>0){
+                       $(this).closest("ul").find("li:gt(0)").css({"background":"","color":"black"});
+                       $(this).css({"background": "green", "color": "white"});
+                       if(indexdata!=null){
+                           if(indexdata==$(this).data("name")){
+                               $(this).css({"background": "", "color": "black"});
+                           }
+                       }
+                       indexdata=$(this).data("name");
+                       $(this).closest("ul").find("li:eq(0)").css("background","url('img/unchecked.jpg')");
+
+                       /*模糊多条件查询*/
+                       console.log(hangtype);
+                       console.log(moral);
+                       console.log(icetype);
+                       console.log("价钱："+price);
+                       console.log(inlay);
+                       console.log(color);
+                       console.log(brand);
+
+                       /*获取总数*/
+                       $.post("doServlet?action=getAllProductsLimitByPageCount",
+                           {hangtype:hangtype,price:price,moral:moral,icetype:icetype,price:price,inlay:inlay,color:color,brand:brand}
+                           ,function (sum) {
+                           console.log("总数："+sum);
+                           //分页
+                           layui.use(['laypage', 'layer'], function() {
+                               var laypage = layui.laypage
+                                   , layer = layui.layer;
+                               //总页数大于页码总数
+                               laypage.render({
+                                   elem: 'demo2-1'
+                                   ,limit:12
+                                   , count: sum //数据总数
+                                   //当前页
+                                   ,curr: location.hash.replace('#!fenye=', '') //获取起始页
+                                   ,hash: 'fenye' //自定义hash值
+                                   , jump: function (obj) {
+                                       //请求数据
+                                       $.ajax({
+                                           url:"doServlet?action=getAllProductsLimit",
+                                           data:{pageno:obj.curr,size:obj.limit,
+                                               hangtype:hangtype,price:price,moral:moral,icetype:icetype,price:price,inlay:inlay,color:color,brand:brand},
+                                           success:function (data) {
+                                               /*清空历史数据*/
+                                               $("#show_details div").remove();
+                                               $.each(data,function (index,obj) {
+                                                   var cdiv=$("<div class='onegood'><div/>");
+                                                   var imgs=$("<img src=img/"+obj.ppicture+">");
+                                                   var span=$("<span>"+obj.pname+"</span>");
+                                                   var p1=$("<p>原价：<del>￥</del><del >"+obj.pmarketprice+"</del><del>元</del></p>");
+                                                   var p2=$("<p class=\"colorgreen\">商城价：￥<span class='pmyprice'>"+obj.pmyprice+"</span><span>元</span></p>");
+                                                   cdiv.append(imgs).append(span).append(p1).append(p2).appendTo($("#show_details"));
+                                               });
+                                           }
+                                       })
+                                   }
+                               });
+                           })
+                       });
+                   }else if($(this).index()==0){
+                       if(boo){
+                           $(this).css("background","url('img/checked.jpg')");
+                           $(this).closest("ul").find("li:gt(0)").css({"background":"","color":"black"});
+                           console.log($(this).data("myid"));
+                           if($(this).data("myid")=="jadebrand"){
+                               brand=0;
+                           }else if($(this).data("myid")=="jadeprice"){
+                               price="";
+                           }else if($(this).data("myid")=="jadecolor"){
+                               color=0;
+                           }else if($(this).data("myid")=="jadeicetype"){
+                               icetype=0;
+                           }else if($(this).data("myid")=="jademoral"){
+                               moral=0;
+                           }else if($(this).data("myid")=="jadehangtype"){
+                               hangtype=0;
+                           }
+                           /*获取总数*/
+                           $.post("doServlet?action=getAllProductsLimitByPageCount",
+                               {hangtype:hangtype,price:price,moral:moral,icetype:icetype,price:price,inlay:inlay,color:color,brand:brand}
+                               ,function (sum) {
+                                   console.log("总数："+sum);
+                                   //分页
+                                   layui.use(['laypage', 'layer'], function() {
+                                       var laypage = layui.laypage
+                                           , layer = layui.layer;
+                                       //总页数大于页码总数
+                                       laypage.render({
+                                           elem: 'demo2-1'
+                                           ,limit:12
+                                           , count: sum //数据总数
+                                           //当前页
+                                           ,curr: location.hash.replace('#!fenye=', '') //获取起始页
+                                           ,hash: 'fenye' //自定义hash值
+                                           , jump: function (obj) {
+                                               //请求数据
+                                               $.ajax({
+                                                   url:"doServlet?action=getAllProductsLimit",
+                                                   data:{pageno:obj.curr,size:obj.limit,
+                                                       hangtype:hangtype,moral:moral,icetype:icetype,price:price,inlay:inlay,color:color,brand:brand},
+                                                   success:function (data) {
+                                                       /*清空历史数据*/
+                                                       $("#show_details div").remove();
+                                                       $.each(data,function (index,obj) {
+                                                           var cdiv=$("<div class='onegood'><div/>");
+                                                           var imgs=$("<img src=img/"+obj.ppicture+">");
+                                                           var span=$("<span>"+obj.pname+"</span>");
+                                                           var p1=$("<p>原价：<del>￥</del><del >"+obj.pmarketprice+"</del><del>元</del></p>");
+                                                           var p2=$("<p class=\"colorgreen\">商城价：￥<span class='pmyprice'>"+obj.pmyprice+"</span><span>元</span></p>");
+                                                           cdiv.append(imgs).append(span).append(p1).append(p2).appendTo($("#show_details"));
+                                                       });
+                                                   }
+                                               })
+                                           }
+                                       });
+                                   })
+                               });
+                           boo=false;
+                       }else {
+                           $(this).css("background","url('img/unchecked.jpg')");
+                           boo=true;
+                       }
+                   }
+               });
+            }
+        };
+        app.init();
+    })
+</script>
+</html>

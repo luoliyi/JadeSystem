@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jadesystem.mapper.ProductsMapper">
+  <resultMap id="BaseResultMap" type="com.jadesystem.entities.Products">
+    <id column="pId" jdbcType="INTEGER" property="pid" />
+    <result column="pName" jdbcType="VARCHAR" property="pname" />
+    <result column="pcId" jdbcType="INTEGER" property="pcid" />
+    <result column="pbId" jdbcType="INTEGER" property="pbid" />
+    <result column="piId" jdbcType="INTEGER" property="piid" />
+    <result column="pmId" jdbcType="INTEGER" property="pmid" />
+    <result column="pitId" jdbcType="INTEGER" property="pitid" />
+    <result column="phtId" jdbcType="INTEGER" property="phtid" />
+    <result column="pMarketPrice" jdbcType="DECIMAL" property="pmarketprice" />
+    <result column="pMyPrice" jdbcType="DECIMAL" property="pmyprice" />
+    <result column="pPicture" jdbcType="VARCHAR" property="ppicture" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    pId, pName, pcId, pbId, piId, pmId, pitId, phtId, pMarketPrice, pMyPrice, pPicture
+  </sql>
+  <select id="selectByExample" parameterType="com.jadesystem.entities.ProductsExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from products
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    <if test="limit != null">
+      <if test="offset != null">
+        limit ${offset}, ${limit}
+      </if>
+      <if test="offset == null">
+        limit ${limit}
+      </if>
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from products
+    where pId = #{pid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from products
+    where pId = #{pid,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.jadesystem.entities.ProductsExample">
+    delete from products
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.jadesystem.entities.Products">
+    <selectKey keyProperty="pid" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into products (pName, pcId, pbId, 
+      piId, pmId, pitId, 
+      phtId, pMarketPrice, pMyPrice, 
+      pPicture)
+    values (#{pname,jdbcType=VARCHAR}, #{pcid,jdbcType=INTEGER}, #{pbid,jdbcType=INTEGER}, 
+      #{piid,jdbcType=INTEGER}, #{pmid,jdbcType=INTEGER}, #{pitid,jdbcType=INTEGER}, 
+      #{phtid,jdbcType=INTEGER}, #{pmarketprice,jdbcType=DECIMAL}, #{pmyprice,jdbcType=DECIMAL}, 
+      #{ppicture,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.jadesystem.entities.Products">
+    <selectKey keyProperty="pid" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into products
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="pname != null">
+        pName,
+      </if>
+      <if test="pcid != null">
+        pcId,
+      </if>
+      <if test="pbid != null">
+        pbId,
+      </if>
+      <if test="piid != null">
+        piId,
+      </if>
+      <if test="pmid != null">
+        pmId,
+      </if>
+      <if test="pitid != null">
+        pitId,
+      </if>
+      <if test="phtid != null">
+        phtId,
+      </if>
+      <if test="pmarketprice != null">
+        pMarketPrice,
+      </if>
+      <if test="pmyprice != null">
+        pMyPrice,
+      </if>
+      <if test="ppicture != null">
+        pPicture,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="pname != null">
+        #{pname,jdbcType=VARCHAR},
+      </if>
+      <if test="pcid != null">
+        #{pcid,jdbcType=INTEGER},
+      </if>
+      <if test="pbid != null">
+        #{pbid,jdbcType=INTEGER},
+      </if>
+      <if test="piid != null">
+        #{piid,jdbcType=INTEGER},
+      </if>
+      <if test="pmid != null">
+        #{pmid,jdbcType=INTEGER},
+      </if>
+      <if test="pitid != null">
+        #{pitid,jdbcType=INTEGER},
+      </if>
+      <if test="phtid != null">
+        #{phtid,jdbcType=INTEGER},
+      </if>
+      <if test="pmarketprice != null">
+        #{pmarketprice,jdbcType=DECIMAL},
+      </if>
+      <if test="pmyprice != null">
+        #{pmyprice,jdbcType=DECIMAL},
+      </if>
+      <if test="ppicture != null">
+        #{ppicture,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.jadesystem.entities.ProductsExample" resultType="java.lang.Long">
+    select count(*) from products
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update products
+    <set>
+      <if test="record.pid != null">
+        pId = #{record.pid,jdbcType=INTEGER},
+      </if>
+      <if test="record.pname != null">
+        pName = #{record.pname,jdbcType=VARCHAR},
+      </if>
+      <if test="record.pcid != null">
+        pcId = #{record.pcid,jdbcType=INTEGER},
+      </if>
+      <if test="record.pbid != null">
+        pbId = #{record.pbid,jdbcType=INTEGER},
+      </if>
+      <if test="record.piid != null">
+        piId = #{record.piid,jdbcType=INTEGER},
+      </if>
+      <if test="record.pmid != null">
+        pmId = #{record.pmid,jdbcType=INTEGER},
+      </if>
+      <if test="record.pitid != null">
+        pitId = #{record.pitid,jdbcType=INTEGER},
+      </if>
+      <if test="record.phtid != null">
+        phtId = #{record.phtid,jdbcType=INTEGER},
+      </if>
+      <if test="record.pmarketprice != null">
+        pMarketPrice = #{record.pmarketprice,jdbcType=DECIMAL},
+      </if>
+      <if test="record.pmyprice != null">
+        pMyPrice = #{record.pmyprice,jdbcType=DECIMAL},
+      </if>
+      <if test="record.ppicture != null">
+        pPicture = #{record.ppicture,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update products
+    set pId = #{record.pid,jdbcType=INTEGER},
+      pName = #{record.pname,jdbcType=VARCHAR},
+      pcId = #{record.pcid,jdbcType=INTEGER},
+      pbId = #{record.pbid,jdbcType=INTEGER},
+      piId = #{record.piid,jdbcType=INTEGER},
+      pmId = #{record.pmid,jdbcType=INTEGER},
+      pitId = #{record.pitid,jdbcType=INTEGER},
+      phtId = #{record.phtid,jdbcType=INTEGER},
+      pMarketPrice = #{record.pmarketprice,jdbcType=DECIMAL},
+      pMyPrice = #{record.pmyprice,jdbcType=DECIMAL},
+      pPicture = #{record.ppicture,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.jadesystem.entities.Products">
+    update products
+    <set>
+      <if test="pname != null">
+        pName = #{pname,jdbcType=VARCHAR},
+      </if>
+      <if test="pcid != null">
+        pcId = #{pcid,jdbcType=INTEGER},
+      </if>
+      <if test="pbid != null">
+        pbId = #{pbid,jdbcType=INTEGER},
+      </if>
+      <if test="piid != null">
+        piId = #{piid,jdbcType=INTEGER},
+      </if>
+      <if test="pmid != null">
+        pmId = #{pmid,jdbcType=INTEGER},
+      </if>
+      <if test="pitid != null">
+        pitId = #{pitid,jdbcType=INTEGER},
+      </if>
+      <if test="phtid != null">
+        phtId = #{phtid,jdbcType=INTEGER},
+      </if>
+      <if test="pmarketprice != null">
+        pMarketPrice = #{pmarketprice,jdbcType=DECIMAL},
+      </if>
+      <if test="pmyprice != null">
+        pMyPrice = #{pmyprice,jdbcType=DECIMAL},
+      </if>
+      <if test="ppicture != null">
+        pPicture = #{ppicture,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where pId = #{pid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.jadesystem.entities.Products">
+    update products
+    set pName = #{pname,jdbcType=VARCHAR},
+      pcId = #{pcid,jdbcType=INTEGER},
+      pbId = #{pbid,jdbcType=INTEGER},
+      piId = #{piid,jdbcType=INTEGER},
+      pmId = #{pmid,jdbcType=INTEGER},
+      pitId = #{pitid,jdbcType=INTEGER},
+      phtId = #{phtid,jdbcType=INTEGER},
+      pMarketPrice = #{pmarketprice,jdbcType=DECIMAL},
+      pMyPrice = #{pmyprice,jdbcType=DECIMAL},
+      pPicture = #{ppicture,jdbcType=VARCHAR}
+    where pId = #{pid,jdbcType=INTEGER}
+  </update>
+</mapper>

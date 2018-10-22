@@ -1,4 +1,5 @@
 package Controller;
+import Log4jUtil.Logging;
 import MyUtils.JSONUtil;
 import MyUtils.Standard;
 import Proxy.CGLIBProxy;
@@ -13,16 +14,6 @@ import java.math.BigDecimal;
 
 @WebServlet("/doServlet")
 public class doServlet extends BaseServlet {
-    /*面向接口编程，访问层，以及动态代理类*/
-    BrandMapper brandDAO= (BrandMapper) new CGLIBProxy().getTargetobjec(new BrandDAO());
-    ColorMapper colorDAO=(ColorMapper) new CGLIBProxy().getTargetobjec(new ColorDAO());
-    HangtypeMapper hangtypeDAO= (HangtypeMapper) new CGLIBProxy().getTargetobjec(new HangtypeDAO());
-    IcetypeMapper icetypeDAO= (IcetypeMapper) new CGLIBProxy().getTargetobjec(new IcetypeDAO());
-    InlayMapper inlayDAO= (InlayMapper) new CGLIBProxy().getTargetobjec(new InlayDAO());
-    MoralMapper moralDAO= (MoralMapper) new CGLIBProxy().getTargetobjec(new MoralDAO());
-    ProductsMapper productsDAO= (ProductsMapper) new CGLIBProxy().getTargetobjec(new ProductsDAO());
-
-    Standard standard=new Standard();
 
     /*每个实体的样例*/
     BrandExample brandExample=new BrandExample();
@@ -32,19 +23,41 @@ public class doServlet extends BaseServlet {
     InlayExample inlayExample=new InlayExample();
     MoralExample moralExample=new MoralExample();
 
+    /*面向接口编程，访问层，以及动态代理类*/
+    BrandMapper brandDAO= (BrandDAO) new CGLIBProxy().getTargetobjec(new BrandDAO());
+    ColorMapper colorDAO=(ColorMapper) new CGLIBProxy().getTargetobjec(new ColorDAO());
+    HangtypeMapper hangtypeDAO= (HangtypeMapper) new CGLIBProxy().getTargetobjec(new HangtypeDAO());
+    IcetypeMapper icetypeDAO= (IcetypeMapper) new CGLIBProxy().getTargetobjec(new IcetypeDAO());
+    InlayMapper inlayDAO= (InlayMapper) new CGLIBProxy().getTargetobjec(new InlayDAO());
+    MoralMapper moralDAO= (MoralMapper) new CGLIBProxy().getTargetobjec(new MoralDAO());
+    ProductsMapper productsDAO= (ProductsMapper) new CGLIBProxy().getTargetobjec(new ProductsDAO());
 
+    Standard standard=new Standard();
+
+    Logging logging=new Logging();
     /*用一个方法返回所有数据*/
+    @Readme("查询所有条件")
     public void getAllDetails(HttpServletRequest request, HttpServletResponse response){
-        standard.succData("brand",brandDAO.selectByExample(brandExample)).succData("color",colorDAO.selectByExample(colorExample))
-               .succData("hangtype",hangtypeDAO.selectByExample(hangtypeExample)).succData("icetype",icetypeDAO.selectByExample(icetypeExample))
-                .succData("inlay",inlayDAO.selectByExample(inlayExample)).succData("moral",moralDAO.selectByExample(moralExample));
+        long start = System.currentTimeMillis();
+        logging.setInfo("开始执行：getAllDetails(查询总数)方法");
+        standard.succData("brand",brandDAO.selectByExample(brandExample))
+                .succData("color",colorDAO.selectByExample(colorExample))
+                .succData("hangtype",hangtypeDAO.selectByExample(hangtypeExample))
+                .succData("icetype",icetypeDAO.selectByExample(icetypeExample))
+                .succData("inlay",inlayDAO.selectByExample(inlayExample))
+                .succData("moral",moralDAO.selectByExample(moralExample));
         try {
             response.getWriter().print(JSONUtil.toJson(standard));
+            Long span = System.currentTimeMillis() - start;
+            logging.setInfo("结束执行：getAllDetails(查询总数)方法,共耗时："+span+"毫秒");
+
         }catch (Exception e){
             e.printStackTrace();
         }
     }
+
     /*查询总数*/
+    @Readme("查询总数")
     public void getAllCount(HttpServletRequest request,HttpServletResponse response){
         ProductsExample productsExample=new ProductsExample();
         try {
@@ -55,6 +68,7 @@ public class doServlet extends BaseServlet {
     }
 
     /*分页查询*/
+    @Readme("分页查询")
     public void  getAllProductsByPage(HttpServletRequest request,HttpServletResponse response){
         ProductsExample productsExample=new ProductsExample();
         int pageno=Integer.parseInt(request.getParameter("pageno"));
@@ -69,6 +83,7 @@ public class doServlet extends BaseServlet {
         }
     }
 
+    @Readme("多条件组合查询加分页")
     public void getAllProductsLimitByPageCount(HttpServletRequest request,HttpServletResponse response){
         int hangtype=Integer.parseInt(request.getParameter("hangtype"));
         int moral=Integer.parseInt(request.getParameter("moral"));
@@ -102,6 +117,7 @@ public class doServlet extends BaseServlet {
     }
 
     /*组合查询*/
+    @Readme("多条件组合查询")
     public void  getAllProductsLimit(HttpServletRequest request,HttpServletResponse response){
         int hangtype=Integer.parseInt(request.getParameter("hangtype"));
         int moral=Integer.parseInt(request.getParameter("moral"));

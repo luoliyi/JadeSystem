@@ -9,6 +9,7 @@ import org.apache.ibatis.session.SqlSession;
 import java.util.List;
 
 public class BrandDAO implements BrandMapper {
+
     public long countByExample(BrandExample example) {
         return 0;
     }
